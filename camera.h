@@ -4,6 +4,7 @@
 #include "rtweekend.h"
 #include "color.h"
 #include "hittable.h"
+#include "material.h"
 
 #include <iostream>
 
@@ -84,12 +85,16 @@ class camera {
     color ray_color(const ray& r, int depth, const hittable& world) const {
       hit_record rec;
 
+      // if we've exceeded the ray bounce limit, no more light is gathered.
       if (depth <= 0)
         return color(0, 0, 0);
 
       if (world.hit(r, interval(0.001, infinity), rec)) {
-        vec3 direction = rec.normal + random_unit_vector();
-        return 0.5 * ray_color(ray(rec.p, direction), depth - 1, world);
+        ray scattered;
+        color atteanuation;
+        if (rec.mat->scatter(r, rec, atteanuation, scattered))
+          return atteanuation * ray_color(scattered, depth-1, world);
+        return color(0, 0, 0);
       }
 
       vec3 unit_direction = unit_vector(r.direction());
