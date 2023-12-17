@@ -53,9 +53,9 @@ class metal : public material {
     double fuzz;
 };
 
-class dieletric : public material {
+class dielectric : public material {
   public:
-    dieletric(double index_of_refraction) : ir(index_of_refraction) {}
+    dielectric(double index_of_refraction) : ir(index_of_refraction) {}
 
     bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override {
       attenuation = color(1.0, 1.0, 1.0);
